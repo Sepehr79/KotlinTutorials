@@ -1,8 +1,8 @@
 package RockPaperScissor
 
 fun main(args: Array<String>){
-    val player: Gamer = Gamer()
-    val computer: Gamer = Gamer()
+    val player: Player = Player()
+    val computer: Computer = Computer()
 
     var input: String = readLine()!!.toString()
 
@@ -12,23 +12,32 @@ fun main(args: Array<String>){
         "s", "scissor", "S", "Scissor" -> player.select = 2
     }
 
-    if(player.select != -1) {
+    try {
+        val winner: IGamer? = getWinner(player, computer)
         println("Your Selection: ${player.getSelection()}\nComputer Selection: ${computer.getSelection()}")
-        printWinner(player, computer)
+
+        if (winner is Player) {
+            println("You Win!")
+        }
+        else if (winner is Computer)
+            println("You Lose!")
+        else
+            println("You Draw")
     }
-    else
-        println("Wrong input!")
+    catch (e: Exception){
+        println("Wrong Choice!")
+    }
 
 }
 
-fun printWinner(player: Gamer, computer: Gamer){
+fun getWinner(player: IGamer, computer: IGamer): IGamer?{
     when{
-        player.getSelection() == "Rock" && computer.getSelection() == "Paper" -> println("You Lose!")
-        player.getSelection() == "Rock" && computer.getSelection() == "Scissor" -> println("You Win!")
-        player.getSelection() == "Paper" && computer.getSelection() == "Rock" -> println("You Win!")
-        player.getSelection() == "Paper" && computer.getSelection() == "Scissor" -> println("You Lose!")
-        player.getSelection() == "Scissor" && computer.getSelection() == "Paper" -> println("You Win!")
-        player.getSelection() == "Scissor" && computer.getSelection() == "Rock" -> println("You Lose!")
-        else -> println("You Draw!")
+        player.getSelection() == "Rock" && computer.getSelection() == "Paper" -> return computer
+        player.getSelection() == "Rock" && computer.getSelection() == "Scissor" -> return player
+        player.getSelection() == "Paper" && computer.getSelection() == "Rock" -> return player
+        player.getSelection() == "Paper" && computer.getSelection() == "Scissor" -> return computer
+        player.getSelection() == "Scissor" && computer.getSelection() == "Paper" -> return player
+        player.getSelection() == "Scissor" && computer.getSelection() == "Rock" -> return computer
+        else -> return null
     }
 }
